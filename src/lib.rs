@@ -107,13 +107,6 @@ fn write_administrator(e: &Env, id: Identifier) {
     e.data().set(key, id);
 }
 
-pub fn check_admin(e: &Env, auth: &Signature) {
-    let auth_id = auth.identifier(e);
-    if auth_id != read_administrator(e) {
-        panic!("not authorized by admin")
-    }
-}
-
 fn read_nonce(e: &Env, id: &Identifier) -> BigInt {
     let key = DataKey::Nonce(id.clone());
     e.data()
@@ -134,7 +127,7 @@ fn burn_shares(e: &Env, to: Identifier, shares: BigInt) {
     let tot_supply = get_tot_supply(e);
     let id_balance = get_id_balance(e, to.clone());
 
-    assert!(shares < id_balance);
+    assert!(shares <= id_balance);
 
     put_tot_supply(e, tot_supply - shares.clone());
     put_id_balance(e, to, id_balance - shares);
@@ -197,9 +190,6 @@ impl VaultContractTrait for VaultContract {
     }
 
     fn withdraw(e: Env, to: Identifier, shares: BigInt) {
-        //        check_admin(&e, &admin_auth.sig);
-        //        verify_and_consume_nonce(&e, &admin_auth.sig, &admin_auth.nonce);
-
         let tot_supply = get_tot_supply(&e);
         let amount = (shares.clone() * get_token_balance(&e)) / tot_supply;
 
