@@ -197,9 +197,6 @@ impl VaultContractTrait for VaultContract {
     }
 
     fn deposit(e: Env, from: Identifier, amount: BigInt) {
-        //        check_admin(&e, &admin_auth.sig);
-        //        verify_and_consume_nonce(&e, &admin_auth.sig, &admin_auth.nonce);
-
         transfer_in_vault(&e, from.clone(), amount.clone());
 
         let tot_supply = get_tot_supply(&e);

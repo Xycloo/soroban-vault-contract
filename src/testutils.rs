@@ -36,8 +36,7 @@ impl VaultContract {
         self.client().nonce()
     }
 
-    pub fn deposit(&self, admin: AccountId, from: Identifier, amount: BigInt) {
-        self.env.set_source_account(&admin);
+    pub fn deposit(&self, from: Identifier, amount: BigInt) {
         self.client().deposit(&from, &amount)
     }
 

@@ -79,7 +79,7 @@ fn test() {
     );
 
     // user1 buys shares from the vault
-    vault.deposit(user1.clone(), user1_id.clone(), BigInt::from_i32(&e, 5));
+    vault.deposit(user1_id.clone(), BigInt::from_i32(&e, 5));
 
     assert_eq!(
         usdc_token.with_source_account(&admin1).balance(&user1_id),
@@ -96,7 +96,7 @@ fn test() {
     );
 
     // user2 buys shares from the vault
-    vault.deposit(user1.clone(), user2_id, BigInt::from_i32(&e, 8));
+    vault.deposit(user2_id, BigInt::from_i32(&e, 8));
 
     // the vault generates yield
     usdc_token.with_source_account(&admin1).mint(
