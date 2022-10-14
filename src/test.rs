@@ -107,7 +107,7 @@ fn test() {
     );
 
     // user1 withdraws from the vault
-    vault.withdraw(user1, user1_id.clone(), BigInt::from_i32(&e, 3));
+    vault.withdraw(user1_id.clone(), BigInt::from_i32(&e, 3));
     assert_eq!(
         usdc_token.with_source_account(&admin1).balance(&user1_id),
         1001

@@ -122,27 +122,6 @@ fn read_nonce(e: &Env, id: &Identifier) -> BigInt {
         .unwrap()
 }
 
-fn verify_and_consume_nonce(e: &Env, auth: &Signature, expected_nonce: &BigInt) {
-    match auth {
-        Signature::Invoker => {
-            if BigInt::zero(e) != expected_nonce {
-                panic!("nonce should be zero for Invoker")
-            }
-            return;
-        }
-        _ => {}
-    }
-
-    let id = auth.identifier(e);
-    let key = DataKey::Nonce(id.clone());
-    let nonce = read_nonce(e, &id);
-
-    if nonce != expected_nonce {
-        panic!("incorrect nonce")
-    }
-    e.data().set(key, &nonce + 1);
-}
-
 fn mint_shares(e: &Env, to: Identifier, shares: BigInt) {
     let tot_supply = get_tot_supply(e);
     let id_balance = get_id_balance(e, to.clone());
@@ -172,7 +151,7 @@ pub trait VaultContractTrait {
     fn deposit(e: Env, from: Identifier, amount: BigInt);
 
     // withdraw an ammount of the vault's token id to "to" by burning shares
-    fn withdraw(e: Env, auth: Auth, to: Identifier, shares: BigInt);
+    fn withdraw(e: Env, to: Identifier, shares: BigInt);
 
     // get vault shares for a user
     fn get_shares(e: Env, id: Identifier) -> BigInt;
@@ -217,9 +196,9 @@ impl VaultContractTrait for VaultContract {
             .unwrap()
     }
 
-    fn withdraw(e: Env, admin_auth: Auth, to: Identifier, shares: BigInt) {
-        check_admin(&e, &admin_auth.sig);
-        verify_and_consume_nonce(&e, &admin_auth.sig, &admin_auth.nonce);
+    fn withdraw(e: Env, to: Identifier, shares: BigInt) {
+        //        check_admin(&e, &admin_auth.sig);
+        //        verify_and_consume_nonce(&e, &admin_auth.sig, &admin_auth.nonce);
 
         let tot_supply = get_tot_supply(&e);
         let amount = (shares.clone() * get_token_balance(&e)) / tot_supply;

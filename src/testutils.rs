@@ -1,9 +1,9 @@
 #![cfg(any(test, feature = "testutils"))]
 
-use crate::{Auth, VaultContractClient};
-use soroban_auth::{Identifier, Signature};
+use crate::VaultContractClient;
+use soroban_auth::Identifier;
 
-use soroban_sdk::{AccountId, BigInt, BytesN, Env};
+use soroban_sdk::{BigInt, BytesN, Env};
 
 pub fn register_test_contract(e: &Env, contract_id: &[u8; 32]) {
     let contract_id = BytesN::from_array(e, contract_id);
@@ -40,16 +40,8 @@ impl VaultContract {
         self.client().deposit(&from, &amount)
     }
 
-    pub fn withdraw(&self, admin: AccountId, to: Identifier, shares: BigInt) {
-        self.env.set_source_account(&admin);
-        self.client().withdraw(
-            &Auth {
-                sig: Signature::Invoker,
-                nonce: BigInt::zero(&self.env),
-            },
-            &to,
-            &shares,
-        )
+    pub fn withdraw(&self, to: Identifier, shares: BigInt) {
+        self.client().withdraw(&to, &shares)
     }
 
     pub fn get_shares(&self, id: &Identifier) -> BigInt {
