@@ -127,7 +127,9 @@ fn burn_shares(e: &Env, to: Identifier, shares: BigInt) {
     let tot_supply = get_tot_supply(e);
     let id_balance = get_id_balance(e, to.clone());
 
-    assert!(shares <= id_balance);
+    if shares > id_balance {
+        panic!("not enough vault shares")
+    }
 
     put_tot_supply(e, tot_supply - shares.clone());
     put_id_balance(e, to, id_balance - shares);
